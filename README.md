@@ -4,9 +4,9 @@ This project is about the game named "game of life" with its own version of it
 
 todo list, 
 frontend: 
-Customizable Grid Size
-start/stop/pauze
-cell toggles
+- Customizable Grid Size
+- start/stop/pauze
+- cell toggles
 
 backend:
 - save game state,
