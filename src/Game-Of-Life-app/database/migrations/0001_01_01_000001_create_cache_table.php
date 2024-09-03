@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('key')->primary();
             $table->string('owner');
             $table->integer('expiration');
+
         });
     }
 
