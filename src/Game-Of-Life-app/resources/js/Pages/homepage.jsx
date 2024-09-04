@@ -1,8 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Homepage({ auth }) {
-
     // generate grid function
     const renderGridBoard = () => {
         const board = [];
@@ -14,13 +14,20 @@ export default function Homepage({ auth }) {
                 const isBlack = total % 2 === 0;
                 columns.push(
                     // create elements
-                    <td
+                    <td 
                         key={`${row}-${col}`}
                         style={{
                             width: '25px',
                             height: '25px',
                             backgroundColor: isBlack ? '#000' : '#000',
                             border: '1px solid gray',
+                            transition: 'background-color 0.5s ease',
+                        }}
+                        onClick={(e) => {
+                            e.target.style.backgroundColor = '#cccccc';
+                            setTimeout(() => {
+                                e.target.style.backgroundColor = isBlack ? '#000' : '#000';
+                            }, 400); // 2000ms = 2 seconds
                         }}
                     ></td>
                 );
@@ -30,7 +37,6 @@ export default function Homepage({ auth }) {
         }
         return board;
     };
-
 
     return (
         // front-end layout
