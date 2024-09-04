@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Board;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class BoardController extends Controller
 {
-    /**
-     * Store a newly created board in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return 1
-     */
     public function store(Request $request)
     {
         // Validate the incoming request data
@@ -26,38 +21,26 @@ class BoardController extends Controller
         $board = new Board();
         $board->name = $request->input('name');
         $board->grid = $request->input('grid');
-        $board->user_id = 1; // has to be changed to 'auth()->id()' when in the app
+        $board->user_id = Auth::id(); // Use the authenticated user's ID
         $board->save();
-        
-        return 1;
+
+        return redirect()->route('home')->with('success', 'Board saved successfully!');
     }
 
-    /**
-     * Display a list of the saved boards for the authenticated user.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function index()
     {
-        // Fetch the boards belonging to the authenticated user, ordered by creation date (newest first)
         $boards = Board::select('id', 'name', 'created_at')
-            ->where('user_id', 1)      // 1 has to be changed to 'Auth::id()' when in app
+            ->where('user_id', 1)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return response()->json($boards);
+        return response()->json(['boards' => $boards], 200);
     }
 
-    /**
-     * Get the grid data for a specific board.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getGrid($id)
     {
         $board = Board::where('id', $id)
-            ->where('user_id', 1)  // 1 has to be changed to 'Auth::id()' when in app
+            ->where('user_id', Auth::id())
             ->first();
 
         if (!$board) {

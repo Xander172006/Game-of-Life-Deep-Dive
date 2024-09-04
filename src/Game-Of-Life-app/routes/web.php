@@ -22,14 +22,13 @@ Route::get('/home', function () {
 
 
 Route::get('/testing-api-endpoints', function () {
-    return view('testingApiEndpoints');
+    return Inertia::render('Api/testings');
 })->name('testing.api.endpoints');
 
 
 Route::post('/boards', [BoardController::class, 'store'])->name('boards.store');
 Route::get('/boards', [BoardController::class, 'index'])->name('boards.getSavedBoards');
 Route::get('/boards/{id}/grid', [BoardController::class, 'getGrid'])->name('boards.getGrid');
-
 
 
 Route::middleware('auth')->group(function () {
