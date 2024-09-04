@@ -27,7 +27,7 @@ Route::get('/testing-api-endpoints', function () {
 
 
 Route::post('/boards', [BoardController::class, 'store'])->name('boards.store');
-Route::get('/boards', [BoardController::class, 'index'])->name('boards.getSavedBoards');
+Route::get('/api/boards', [BoardController::class, 'index'])->name('boards.getSavedBoards');
 Route::get('/boards/{id}/grid', [BoardController::class, 'getGrid'])->name('boards.getGrid');
 
 

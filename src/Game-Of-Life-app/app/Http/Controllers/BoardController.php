@@ -3,38 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\Board;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Spatie\QueryBuilder\QueryBuilder;
+
+use App\Http\Requests\storeBoards;
 
 class BoardController extends Controller
 {
-    public function store(Request $request)
+    public function store(storeBoards $request): redirectResponse
     {
-        // Validate the incoming request data
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'grid' => 'required|string'
+        // validation
+        $validatedData = $request->validated();
+
+        // store
+        $board = Board::create([
+                'name' => $validatedData['name'],
+                'grid' => $validatedData['grid'],
+                'user_id' => Auth::id(),
         ]);
 
-        // Create and save the board to the database
-        $board = new Board();
-        $board->name = $request->input('name');
-        $board->grid = $request->input('grid');
-        $board->user_id = Auth::id(); // Use the authenticated user's ID
-        $board->save();
+        session()->flash('success', 'Board created successfully!');
 
-        return redirect()->route('home')->with('success', 'Board saved successfully!');
+        // redirect
+        return redirect()->route('testing.api.endpoints');
     }
 
     public function index()
     {
-        $boards = Board::select('id', 'name', 'created_at')
-            ->where('user_id', 1)
+        $boards = QueryBuilder::for(Board::class)
+            ->allowedFilters('name')
+            ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get(); 
 
-        return response()->json(['boards' => $boards], 200);
+        return response()->json([
+            'boards' => $boards,
+            'flash' => session('success'),
+        ]);
     }
 
     public function getGrid($id)
