@@ -19,7 +19,18 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+
+Route::get('/testing-api-endpoints', function () {
+    return view('testingApiEndpoints');
+})->name('testing.api.endpoints');
+
+
 Route::post('/boards', [BoardController::class, 'store'])->name('boards.store');
+Route::get('/boards', [BoardController::class, 'index'])->name('boards.getSavedBoards');
+Route::get('/boards/{id}/grid', [BoardController::class, 'getGrid'])->name('boards.getGrid');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
