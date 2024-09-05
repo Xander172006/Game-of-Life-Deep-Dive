@@ -1,76 +1,79 @@
+import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Homepage({ auth }) {
-    // grid function
-    const renderGridBoard = () => {
-        const board = [];
+    const [timer, setTimer] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
+
+    // Grid state (15 rows x 35 cols, all set to 0 initially)
+    const [gridState, setGridState] = useState(() => {
         const rows = 15;
-        const cols = 30;
+        const cols = 35;
+        return Array.from({ length: rows }, () =>
+            Array.from({ length: cols }, () => 0)
+        );
+    });
 
+    useEffect(() => {
+        let interval = null;
+        if (isRunning) {
+            interval = setInterval(() => {
+                setTimer(prevTimer => prevTimer + 1);
+            }, 1000);
+        } else if (!isRunning && timer !== 0) {
+            clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+    }, [isRunning, timer]);
 
-        // send [x][y] to the server
-        const handleClick = (row, col) => {
-            fetch('/receive-field', {
-                // post request
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                // send json
-                body: JSON.stringify({
-                    row: row,
-                    col: col,
-                }),
+    const handleClick = (row, col) => {
+        const updatedGrid = gridState.map((r, rowIndex) =>
+            r.map((cell, colIndex) => (rowIndex === row && colIndex === col ? 1 - cell : cell))
+        );
+        setGridState(updatedGrid);
+    };
+
+    const handleSubmitGrid = () => {
+        // Send the grid state to the backend via POST request
+        fetch('/submit-grid', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify({
+                grid: gridState, // Send the gridState (2D array)
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Grid data submitted:', data);
             })
-                // log response
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                })
-                // log error
-                .catch(error => console.error('Error fetching boards:', error));
-        };
+            .catch(error => console.error('Error submitting grid:', error));
+    };
 
+    const renderGridBoard = () => {
+        const rows = 15;
+        const cols = 35;
+        const board = [];
 
-        // create grid
-        for (let row = 1; row <= rows; row++) {
+        for (let row = 0; row < rows; row++) {
             const columns = [];
-            for (let col = 1; col <= cols; col++) {
-                const total = row + col;
-                const isBlack = total % 2 === 0;
+            for (let col = 0; col < cols; col++) {
+                const isHighlighted = gridState[row][col] === 1;
+
                 columns.push(
                     <td
                         key={`${row}-${col}`}
                         style={{
                             width: '35px',
                             height: '34px',
-                            backgroundColor: isBlack ? '#000' : '#000',
+                            backgroundColor: isHighlighted ? '#ffffff' : '#000000',
                             border: '1px solid gray',
-                            transition: 'background-color 0.5s ease',
                         }}
-
-                        // hover effect 
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#404040';
-                            setTimeout(() => {
-                                e.target.style.backgroundColor = isBlack ? '#000' : '#000';
-                            }, 400);
-                        }}
-
-                        // click effect
-                        onClick={(e) => {
-                            // send request
-                            handleClick(row, col);
-
-                            // Change the color on click
-                            e.target.style.backgroundColor = '#cccccc';
-                            setTimeout(() => {
-                                e.target.style.backgroundColor = isBlack ? '#000' : '#000';
-                            }, 1000); 
-                        }}
+                        onClick={() => handleClick(row, col)}
                     ></td>
                 );
             }
@@ -91,8 +94,41 @@ export default function Homepage({ auth }) {
                     </table>
                 </section>
 
-                <section className='p-11'>
-                    <button className="text-white bg-green-500 px-8 py-4 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200" type="button">Play</button>
+                <section className='p-11 flex justify-center items-center gap-5'>
+                    <div>
+                        <button 
+                            className="text-white bg-green-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200" 
+                            type="button"
+                            onClick={() => setIsRunning(true)}
+                        >
+                            Play
+                        </button>
+                    </div>
+
+                    <div>
+                        <button 
+                            className="text-white bg-red-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
+                            type="button"
+                            onClick={() => setIsRunning(false)}
+                        >
+                            Stop
+                        </button>
+                    </div>
+
+                    <div>
+                        <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
+                    </div>
+
+                    {/* New button to submit grid */}
+                    <div>
+                        <button 
+                            className="text-white bg-blue-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
+                            type="button"
+                            onClick={handleSubmitGrid}
+                        >
+                            Submit Grid
+                        </button>
+                    </div>
                 </section>
             </main>
         </AuthenticatedLayout>

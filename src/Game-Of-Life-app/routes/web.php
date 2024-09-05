@@ -22,7 +22,7 @@ Route::get('/', function () {
 // make sure user needs to be authenticated to access the homepage
 Route::middleware('auth')->group(function () {
     Route::get('/', [HomePageController::class, 'index'])->name('homepage');
-    Route::post('/receive-field', [HomePageController::class, 'store'])->name('homepage.store');
+    Route::post('/submit-grid', [HomePageController::class, 'submitGrid'])->name('homepage.submitGrid');
 });
 
 

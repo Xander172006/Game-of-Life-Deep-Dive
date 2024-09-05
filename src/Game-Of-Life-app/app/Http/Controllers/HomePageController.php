@@ -12,12 +12,20 @@ class HomePageController extends Controller
         return Inertia::render('homepage');
     }
 
-    public function store(Request $request)
+    public function submitGrid(Request $request)
     {
+        // Receive the 2D grid array
+        $grid = $request->input('grid');
+
+        // Example: Log the grid or process it as needed
+        \Log::info('Grid submitted', ['grid' => $grid]);
+
+        // You can process the grid, save it to the database, etc.
+
+        // Return a success response
         return response()->json([
-            'message' => 'Coördinaten ontvangen',
-            'row' => $request['row'],
-            'col' => $request['col'],
+            'message' => 'Grid data received successfully',
+            'grid' => $grid,
         ]);
     }
 }
