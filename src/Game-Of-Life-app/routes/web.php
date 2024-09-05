@@ -15,9 +15,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/home', function () {
+
+// make sure user needs to be authenticated to access the homepage
+Route::get('/', function () {
     return Inertia::render('homepage');
-})->name('home');
+})->middleware(['auth'])->name('homepage');
 
 
 
