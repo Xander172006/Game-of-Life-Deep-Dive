@@ -8,14 +8,36 @@ export default function Homepage({ auth }) {
         const rows = 15;
         const cols = 30;
 
+
+        // Function to handle the click event
+        const handleClick = (row, col) => {
+            // Verstuur de coördinaten via een POST-verzoek
+            fetch('/receive-field', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({
+                    row: row,
+                    col: col,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => console.error('Error fetching boards:', error));
+        };
+
         for (let row = 1; row <= rows; row++) {
             const columns = [];
             for (let col = 1; col <= cols; col++) {
                 const total = row + col;
                 const isBlack = total % 2 === 0;
                 columns.push(
-                    <td 
-                        // add css styles 
+                    <td
                         key={`${row}-${col}`}
                         style={{
                             width: '35px',
@@ -35,6 +57,13 @@ export default function Homepage({ auth }) {
 
                         // click effect
                         onClick={(e) => {
+                            // Log the row and column in the console
+                            console.log(`Clicked on row: ${row}, column: ${col}`);
+
+                            // Verstuur de coördinaten via een POST-verzoek
+                            handleClick(row, col);
+
+                            // Change the color on click
                             e.target.style.backgroundColor = '#cccccc';
                             setTimeout(() => {
                                 e.target.style.backgroundColor = isBlack ? '#000' : '#000';
