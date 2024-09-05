@@ -2,35 +2,40 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Homepage({ auth }) {
-    // generate grid function
+    // grid function
     const renderGridBoard = () => {
         const board = [];
         const rows = 15;
         const cols = 30;
 
 
-        // Function to handle the click event
+        // send [x][y] to the server
         const handleClick = (row, col) => {
-            // Verstuur de coördinaten via een POST-verzoek
             fetch('/receive-field', {
+                // post request
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 },
+                // send json
                 body: JSON.stringify({
                     row: row,
                     col: col,
                 }),
             })
+                // log response
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
                 })
+                // log error
                 .catch(error => console.error('Error fetching boards:', error));
         };
 
+
+        // create grid
         for (let row = 1; row <= rows; row++) {
             const columns = [];
             for (let col = 1; col <= cols; col++) {
@@ -57,10 +62,7 @@ export default function Homepage({ auth }) {
 
                         // click effect
                         onClick={(e) => {
-                            // Log the row and column in the console
-                            console.log(`Clicked on row: ${row}, column: ${col}`);
-
-                            // Verstuur de coördinaten via een POST-verzoek
+                            // send request
                             handleClick(row, col);
 
                             // Change the color on click
