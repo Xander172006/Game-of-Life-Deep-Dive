@@ -5,7 +5,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 
-export default function Authenticated({ user, header, children }) {
+export default function Authenticated({ user, header, children, page }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
@@ -16,6 +16,12 @@ export default function Authenticated({ user, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex justify-center items-center gap-5">
                                 <p className='text-white font-bold text-[1.5rem]'>Game of Life</p>
+
+                                {page === 'Testing Endpoints' ? (
+                                    <Link href={route('testing.api.endpoints')} className="text-white font-bold text-[1.5rem]">Testing Endpoints</Link>
+                                ) : (
+                                    <Link href={route('homepage')} className="text-white font-bold text-[1.5rem]">Homepage</Link>
+                                )}
                             </div>
                         </div>
 
@@ -50,7 +56,7 @@ export default function Authenticated({ user, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link href={route('home')}>Homepage</Dropdown.Link>
+                                        <Dropdown.Link href={route('homepage')}>Homepage</Dropdown.Link>
                                         <Dropdown.Link href={route('testing.api.endpoints')}>Api endpoints</Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
                                             Log Out
@@ -92,7 +98,7 @@ export default function Authenticated({ user, header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('home')}>Homepage</ResponsiveNavLink>
+                            <ResponsiveNavLink href={route('homepage')}>Homepage</ResponsiveNavLink>
                             <ResponsiveNavLink href={route('testing.api.endpoints')}>Api endpoints</ResponsiveNavLink>
                             <ResponsiveNavLink method="post" href={route('logout')} as="button">
                                 Log Out
