@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\BoardController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,10 +20,10 @@ Route::get('/', function () {
 
 
 // make sure user needs to be authenticated to access the homepage
-Route::get('/', function () {
-    return Inertia::render('homepage');
-})->middleware(['auth'])->name('homepage');
-
+Route::middleware('auth')->group(function () {
+    Route::get('/', [HomePageController::class, 'index'])->name('homepage');
+    Route::post('/receive-field', [HomePageController::class, 'store'])->name('homepage.store');
+});
 
 
 Route::get('/testing-api-endpoints', function () {
