@@ -14,6 +14,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                playfull: ['Playfair Display', ...defaultTheme.fontFamily.serif],
+                pixelify: ['"Pixelify Sans"', 'sans-serif'],
             },
         },
     },

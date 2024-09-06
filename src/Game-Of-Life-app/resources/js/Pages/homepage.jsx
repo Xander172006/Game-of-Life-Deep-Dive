@@ -137,20 +137,26 @@ export default function Homepage({ auth }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Homepage" />
-            <main className="w-full h-full flex flex-row-reverse justify-center items-center mx-auto p-0 m-0">
-                <section className="w-full h-[90vh] flex justify-center items-center overflow-auto mb-auto">
-                    <table className="border-[5px] border-gray-500">
-                        <tbody>
-                            {renderGridBoard()}
-                        </tbody>
-                    </table>
+            <main className="w-[90%] h-full flex flex-row-reverse justify-center items-center mx-auto p-0 m-0">
+                <section className="w-full h-[90vh] flex flex-col justify-center items-center overflow-auto mb-auto">
+                    <div className='mr-auto my-2'>
+                        <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
+                    </div>
+                    <div>
+                        <table className="border-[5px] border-gray-500">
+                            <tbody>
+                                {renderGridBoard()}
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
 
-                <section className='p-4 grid place-items-center place-content-center items-center grid-cols-1 mb-auto gap-5 mt-[1%] w-[50%] mx-[5%]'>
-                    <div className='w-full flex justify-center items-center gap-4 mt-[2%]'>
+                <section className='p-4 grid place-items-start place-content-start items-start grid-cols-1 gap-5 mt-[2.5%] w-[35%] mr-[5%] mb-auto'>
+                    <h3 className='text-white font-bold font-playfull text-[1.5rem]'>Start game</h3>
+                    <div className='w-full flex justify-start items-start gap-4 mt-[2%]'>
                         <div>
                             <button 
-                                className={`text-white ${isRunning ? 'bg-orange-600' : 'bg-green-500'} px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200`} 
+                                className={`text-white ${isRunning ? 'bg-orange-600' : 'bg-green-500'} px-5 bg-opacity-30 border-green-400 border-[1px] py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200 font-pixelify`} 
                                 type="button"
                                 onClick={() => setIsRunning(!isRunning)}
                             >
@@ -160,7 +166,7 @@ export default function Homepage({ auth }) {
 
                         <div>
                             <button 
-                                className="text-white bg-red-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
+                                className="text-white bg-red-500 px-5 py-2 bg-opacity-30 border-red-400 border-[1px] rounded-md font-bold text-[0.85rem] hover:scale-[1.1] font-pixelify transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
                                 type="button"
                                 onClick={handleStop}
                             >
@@ -169,44 +175,43 @@ export default function Homepage({ auth }) {
                         </div>
                     </div>
 
-                    <div>
+                    <h4 className='text-white font-bold font-playfull text-[1rem] mt-5'>Options</h4>
+                    <div className='flex justify-center items-start gap-4'>
                         <div>
-                            <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
-                        </div>
-                    </div>
-
-
-                    <div className='flex justify-center items-center gap-4'>
-                        <div>
-                            <button 
-                                className="text-white bg-blue-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
-                                type="button"
-                                onClick={handleSubmitGrid}
-                            >
-                                Submit Grid
-                            </button>
-                        </div>
-
-                        <div>
+                            
                             <button
-                                className="text-white bg-purple-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                                className="text-white font-pixelify bg-gray-500 bg-opacity-40 border-slate-400 border-[1px] px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200 "
                                 type="button"
                                 onClick={loadRandomBoard}
                             >
                                 Random board
                             </button>
                         </div>
-                    </div>
-
-
-                    <div>
                         <div>
                             <button
-                                className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                                className="text-white font-pixelify bg-gray-500 bg-opacity-40 border-slate-400 border-[1px] px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
                                 type="button"
                                 onClick={loadBoard}
                             >
                                 Load Board
+                            </button>
+                        </div>
+                    </div>
+
+                    <h4 className='text-white font-bold font-playfull text-[1rem] mt-5'>Save</h4>
+                    <div className='flex justify-center items-center gap-4'>
+                        <div>
+                            <label htmlFor=""></label>
+                            <input type="text" className='w-full bg-gray-800 text-white' />
+                        </div>
+
+                        <div className='w-[50%]'>
+                            <button 
+                                className="text-white w-full font-pixelify bg-blue-500 bg-opacity-30 border-sky-300 border-[1px] px-5 py-[0.6rem] rounded-md font-bold text-[0.9rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
+                                type="button"
+                                onClick={handleSubmitGrid}
+                            >
+                                Submit Grid
                             </button>
                         </div>
                     </div>
