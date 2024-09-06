@@ -15,11 +15,12 @@ export default function Homepage({ auth }) {
     useEffect(() => {
         let gameInterval = null;
         let timerInterval = null;
+        let speedOfGame = 300;
 
         if (isRunning) {
             gameInterval = setInterval(() => {
                 setGridState(prevGrid => computeNextGeneration(prevGrid));
-            }, 300); // snelheid van spel 
+            }, speedOfGame); // snelheid van spel 
             
             timerInterval = setInterval(() => {
                 setTimer(prevTimer => prevTimer + 1);
@@ -55,6 +56,16 @@ export default function Homepage({ auth }) {
             })
             .catch(error => console.error('Error submitting grid:', error));
     };
+
+    const loadRandomBoard = () => {
+        const rows = gridState.length;
+        const cols = gridState[0].length;
+        const randomGrid = gridState.map(row => 
+            row.map(() => (Math.random() < 0.3 ? 1 : 0))
+        );
+        setGridState(randomGrid);
+    };
+    
 
     const renderGridBoard = () => {
         const rows = gridState.length;
@@ -127,6 +138,16 @@ export default function Homepage({ auth }) {
                             onClick={handleSubmitGrid}
                         >
                             Submit Grid
+                        </button>
+                    </div>
+
+                    <div>
+                        <button
+                            className="text-white bg-purple-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                            type="button"
+                            onClick={loadRandomBoard}
+                        >
+                            Random board
                         </button>
                     </div>
                 </section>
