@@ -114,7 +114,7 @@ export default function Authenticated({ user, header, children, page }) {
                 </header>
             )}
 
-            <main>{children}</main>
+            <main className='h-[90dvh]'>{children}</main>
         </div>
     );
 }

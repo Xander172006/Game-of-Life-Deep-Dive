@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Board;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\QueryBuilder;
+
+use App\Http\Requests\storeBoards;
+use Illuminate\Http\Request;
 
 class HomePageController extends Controller
 {
@@ -15,12 +20,17 @@ class HomePageController extends Controller
     public function submitGrid(Request $request)
     {
         // Receive the 2D grid array
-        $grid = $request->input('grid');
+        $grid = $request->all();
 
         // Example: Log the grid or process it as needed
         \Log::info('Grid submitted', ['grid' => $grid]);
+        $serializedGrid = json_encode($grid['grid']);
 
-        // You can process the grid, save it to the database, etc.
+        $board = Board::create([
+            'name' => 'Game of Life',
+            'grid' => $serializedGrid,
+            'user_id' => Auth::id(),
+        ]);
 
         // Return a success response
         return response()->json([
