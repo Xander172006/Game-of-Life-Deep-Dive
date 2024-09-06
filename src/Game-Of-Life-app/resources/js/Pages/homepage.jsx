@@ -199,18 +199,13 @@ export default function Homepage({ auth }) {
     const [timer, setTimer] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
 
-    const initialGridState = () => {
-        const rows = 16;
+    // Grid state (15 rows x 35 cols, all set to 0 initially)
+    const [gridState, setGridState] = useState(() => {
+        const rows = 15;
         const cols = 35;
         return Array.from({ length: rows }, () =>
             Array.from({ length: cols }, () => 0)
         );
-    };
-
-    const [gridState, setGridState] = useState(() => {
-        const rows = 16;
-        const cols = 35;
-        return createEmptyGrid(rows, cols);
     });
 
     useEffect(() => {
@@ -298,16 +293,14 @@ export default function Homepage({ auth }) {
             <main className="w-full h-full flex flex-col justify-center items-center mx-auto p-0 m-0">
                 <section className="w-full h-[90vh] flex justify-center items-center overflow-auto mb-auto">
                     <table className="border-[5px] border-gray-500">
-                        <tbody>
-                            {renderGridBoard()}
-                        </tbody>
+                        <tbody>{renderGridBoard()}</tbody>
                     </table>
                 </section>
 
-                <section className='p-4 flex justify-center items-center gap-5 mt-auto'>
-                <div>
-                         <button 
-                            className={`text-white ${isRunning ? 'bg-orange-600' : 'bg-green-500'} px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200`} 
+                <section className='p-11 flex justify-center items-center gap-5'>
+                    <div>
+                        <button 
+                            className="text-white bg-green-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200" 
                             type="button"
                             onClick={() => setIsRunning(!isRunning)}
                         >
@@ -317,7 +310,7 @@ export default function Homepage({ auth }) {
 
                     <div>
                         <button 
-                            className="text-white bg-red-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
+                            className="text-white bg-red-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
                             type="button"
                             onClick={handleStop}
                         >
@@ -326,12 +319,14 @@ export default function Homepage({ auth }) {
                     </div>
 
                     <div>
-                        <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
+                        <p className="text-gray-300">
+                            Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}
+                        </p>
                     </div>
 
                     <div>
                         <button 
-                            className="text-white bg-blue-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
+                            className="text-white bg-blue-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
                             type="button"
                             onClick={handleSubmitGrid}
                         >
@@ -342,6 +337,37 @@ export default function Homepage({ auth }) {
             </main>
         </AuthenticatedLayout>
     );
+}
+
+function createEmptyGrid(rows, cols) {
+    return Array.from({ length: rows }, () => Array(cols).fill(0));
+}
+
+function computeNextGeneration(grid) {
+    const nextGrid = createEmptyGrid(grid.length, grid[0].length);
+    for (let row = 0; row < grid.length; row++) {
+        for (let col = 0; col < grid[row].length; col++) {
+            const aliveNeighbors = countAliveNeighbors(grid, row, col);
+            const isAlive = grid[row][col] === 1;
+            nextGrid[row][col] = (isAlive && (aliveNeighbors === 2 || aliveNeighbors === 3)) || (!isAlive && aliveNeighbors === 3) ? 1 : 0;
+        }
+    }
+    return nextGrid;
+}
+
+function countAliveNeighbors(grid, row, col) {
+    let aliveCount = 0;
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i === 0 && j === 0) continue;
+            const neighborRow = row + i;
+            const neighborCol = col + j;
+            if (neighborRow >= 0 && neighborRow < grid.length && neighborCol >= 0 && neighborCol < grid[0].length) {
+                aliveCount += grid[neighborRow][neighborCol];
+            }
+        }
+    }
+    return aliveCount;
 }
 
 
