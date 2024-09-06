@@ -7,16 +7,16 @@ export default function Homepage({ auth }) {
     const [isRunning, setIsRunning] = useState(false);
 
     const initialGridState = () => {
-        const rows = 16;
-        const cols = 35;
+        const rows = 18;
+        const cols = 30;
         return Array.from({ length: rows }, () =>
             Array.from({ length: cols }, () => 0)
         );
     };
 
     const [gridState, setGridState] = useState(() => {
-        const rows = 16;
-        const cols = 35;
+        const rows = 18;
+        const cols = 30;
         return createEmptyGrid(rows, cols);
     });
 
@@ -137,7 +137,7 @@ export default function Homepage({ auth }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Homepage" />
-            <main className="w-full h-full flex flex-col justify-center items-center mx-auto p-0 m-0">
+            <main className="w-full h-full flex flex-row-reverse justify-center items-center mx-auto p-0 m-0">
                 <section className="w-full h-[90vh] flex justify-center items-center overflow-auto mb-auto">
                     <table className="border-[5px] border-gray-500">
                         <tbody>
@@ -146,59 +146,69 @@ export default function Homepage({ auth }) {
                     </table>
                 </section>
 
-                <section className='p-4 flex justify-center items-center gap-5 mt-auto'>
-                <div>
-                         <button 
-                            className={`text-white ${isRunning ? 'bg-orange-600' : 'bg-green-500'} px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200`} 
-                            type="button"
-                            onClick={() => setIsRunning(!isRunning)}
-                        >
-                            {isRunning ? 'Pause' : 'Play'}
-                        </button>
+                <section className='p-4 grid place-items-center place-content-center items-center grid-cols-1 mb-auto gap-5 mt-[1%] w-[50%] mx-[5%]'>
+                    <div className='w-full flex justify-center items-center gap-4 mt-[2%]'>
+                        <div>
+                            <button 
+                                className={`text-white ${isRunning ? 'bg-orange-600' : 'bg-green-500'} px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-green-700 focus:text-gray-200`} 
+                                type="button"
+                                onClick={() => setIsRunning(!isRunning)}
+                            >
+                                {isRunning ? 'Pause' : 'Play'}
+                            </button>
+                        </div>
+
+                        <div>
+                            <button 
+                                className="text-white bg-red-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
+                                type="button"
+                                onClick={handleStop}
+                            >
+                                Stop
+                            </button>
+                        </div>
                     </div>
 
                     <div>
-                        <button 
-                            className="text-white bg-red-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-red-700 focus:text-gray-200" 
-                            type="button"
-                            onClick={handleStop}
-                        >
-                            Stop
-                        </button>
+                        <div>
+                            <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
+                        </div>
                     </div>
 
-                    <div>
-                        <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
+
+                    <div className='flex justify-center items-center gap-4'>
+                        <div>
+                            <button 
+                                className="text-white bg-blue-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
+                                type="button"
+                                onClick={handleSubmitGrid}
+                            >
+                                Submit Grid
+                            </button>
+                        </div>
+
+                        <div>
+                            <button
+                                className="text-white bg-purple-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                                type="button"
+                                onClick={loadRandomBoard}
+                            >
+                                Random board
+                            </button>
+                        </div>
                     </div>
 
-                    <div>
-                        <button 
-                            className="text-white bg-blue-500 px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:bg-blue-700 focus:text-gray-200" 
-                            type="button"
-                            onClick={handleSubmitGrid}
-                        >
-                            Submit Grid
-                        </button>
-                    </div>
 
                     <div>
-                        <button
-                            className="text-white bg-purple-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
-                            type="button"
-                            onClick={loadRandomBoard}
-                        >
-                            Random board
-                        </button>
-                    </div>
-
-                    <div>
-                        <button
-                            className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
-                            type="button"
-                            onClick={loadBoard}
-                        >
-                            Load Board
-                        </button>
+                        <div>
+                            <button
+                                className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                                type="button"
+                                onClick={loadBoard}
+                            >
+                                Load Board
+                            </button>
+                        </div>
                     </div>
                 </section>
             </main>
