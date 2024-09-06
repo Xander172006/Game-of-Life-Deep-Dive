@@ -29,20 +29,6 @@ class BoardController extends Controller
         return redirect()->route('testing.api.endpoints');
     }
 
-    public function index()
-    {
-        $boards = QueryBuilder::for(Board::class)
-            ->allowedFilters('name')
-            ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get(); 
-
-        return response()->json([
-            'boards' => $boards,
-            'flash' => session('success'),
-        ]);
-    }
-
     public function getGrid($id)
     {
         $board = Board::where('id', $id)

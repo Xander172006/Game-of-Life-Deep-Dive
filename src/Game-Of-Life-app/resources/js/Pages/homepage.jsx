@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Homepage({ auth }) {
+export default function Homepage({ auth, savedBoards }) {
     const [timer, setTimer] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
-
+    const [showSavedBoards, setShowSavedBoards] = useState(false); // State to manage display of saved boards
     const initialGridState = () => {
         const rows = 18;
         const cols = 30;
@@ -14,17 +14,14 @@ export default function Homepage({ auth }) {
         );
     };
 
-    const [gridState, setGridState] = useState(() => {
-        const rows = 18;
-        const cols = 30;
-        return createEmptyGrid(rows, cols);
-    });
-
+    const [gridState, setGridState] = useState(() => createEmptyGrid(18, 30));
+    
+    const [selectedBoard, setSelectedBoard] = useState(null); // To track the selected board
 
     useEffect(() => {
         let gameInterval = null;
         let timerInterval = null;
-
+        
         if (isRunning) {
             gameInterval = setInterval(() => {
                 setGridState(prevGrid => computeNextGeneration(prevGrid));
@@ -34,13 +31,12 @@ export default function Homepage({ auth }) {
                 setTimer(prevTimer => prevTimer + 1);
             }, 1000);
         }
-
+        
         return () => {
             clearInterval(gameInterval);
             clearInterval(timerInterval);
         };
     }, [isRunning]);
-
 
     const handleClick = (row, col) => {
         const updatedGrid = gridState.map((r, rowIndex) =>
@@ -48,7 +44,7 @@ export default function Homepage({ auth }) {
         );
         setGridState(updatedGrid);
     };
-    
+
 
     const handleSubmitGrid = () => {
         fetch('/submit-grid', {
@@ -60,11 +56,11 @@ export default function Homepage({ auth }) {
             },
             body: JSON.stringify({ grid: gridState }),
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Grid data submitted:', data);
-            })
-            .catch(error => console.error('Error submitting grid:', error));
+        .then(response => response.json())
+        .then(data => {
+            console.log('Grid data submitted:', data);
+        })
+        .catch(error => console.error('Error submitting grid:', error));
     };
 
     const loadRandomBoard = () => {
@@ -76,36 +72,17 @@ export default function Homepage({ auth }) {
         setGridState(randomGrid);
     };
 
-
-    const loadBoard = () => {
-        const hardcodedBoard = [
-            [0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0],
-            [1,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0],
-            [0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,1,0,0],
-            [0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0],
-            [0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0],
-            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,1,0],
-            [0,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1],
-            [0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
-            [0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0],
-            [0,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0],
-            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0,0],
-            [0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0],
-            [0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0],
-            [0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0]
-        ];
-        setGridState(hardcodedBoard);
+    const loadSelectedBoard = (board) => {
+        const parsedGrid = JSON.parse(board.grid);
+        setGridState(parsedGrid);
+        setShowSavedBoards(false);
     };
-
 
     const handleStop = () => {
         setIsRunning(false);
         setTimer(0);
         setGridState(initialGridState());
     };
-    
 
     const renderGridBoard = () => {
         const rows = gridState.length;
@@ -175,7 +152,6 @@ export default function Homepage({ auth }) {
                         </div>
                     </div>
 
-
                     <div className='flex justify-center items-center gap-4'>
                         <div>
                             <button 
@@ -198,18 +174,30 @@ export default function Homepage({ auth }) {
                         </div>
                     </div>
 
-
+                    {/* Render the "Load Board" button and list of saved boards */}
                     <div>
-                        <div>
-                            <button
-                                className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
-                                type="button"
-                                onClick={loadBoard}
-                            >
-                                Load Board
-                            </button>
-                        </div>
+                        <button
+                            className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                            type="button"
+                            onClick={() => setShowSavedBoards(!showSavedBoards)}
+                        >
+                            Load Board
+                        </button>
                     </div>
+                    
+                    {/* Display saved boards when the "Load Board" button is clicked */}
+                    {showSavedBoards && (
+                        <div>
+                            <h3 className="text-white font-bold text-[1.25rem] mb-2">Select a Saved Board</h3>
+                            <ul className="bg-gray-800 p-4 rounded-md text-white max-h-[200px] overflow-auto">
+                                {savedBoards.map((board) => (
+                                    <li key={board.id} className="cursor-pointer hover:bg-gray-600 p-2" onClick={() => loadSelectedBoard(board)}>
+                                        {board.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </section>
             </main>
         </AuthenticatedLayout>

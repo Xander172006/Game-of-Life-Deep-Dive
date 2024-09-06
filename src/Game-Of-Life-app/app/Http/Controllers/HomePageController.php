@@ -6,15 +6,30 @@ use App\Models\Board;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
-
-use App\Http\Requests\storeBoards;
 use Illuminate\Http\Request;
 
 class HomePageController extends Controller
 {
+    public function loadSavedBoards()
+    {
+        $boards = QueryBuilder::for(Board::class)
+            ->allowedFilters('name')
+            ->where('user_id', Auth::id())
+            ->select('id', 'name', 'grid', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $boards; // Return the boards collection directly
+    }
+
+
     public function index()
     {
-        return Inertia::render('homepage');
+        $savedBoards = self::loadSavedBoards();
+
+        return Inertia::render('homepage', [
+            'savedBoards' => $savedBoards
+        ]);
     }
 
     public function submitGrid(Request $request)
