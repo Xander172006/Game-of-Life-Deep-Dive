@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Homepage({ auth }) {
+export default function Homepage({ auth, savedBoards }) {
     const [timer, setTimer] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
+    const [showSavedBoards, setShowSavedBoards] = useState(false); // State to manage display of saved boards
 
     const initialGridState = () => {
         const rows = 18;
@@ -14,12 +15,8 @@ export default function Homepage({ auth }) {
         );
     };
 
-    const [gridState, setGridState] = useState(() => {
-        const rows = 18;
-        const cols = 30;
-        return createEmptyGrid(rows, cols);
-    });
-
+    const [gridState, setGridState] = useState(() => createEmptyGrid(18, 30));
+    const [selectedBoard, setSelectedBoard] = useState(null);
 
     useEffect(() => {
         let gameInterval = null;
@@ -58,7 +55,10 @@ export default function Homepage({ auth }) {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
-            body: JSON.stringify({ grid: gridState }),
+            body: JSON.stringify({ 
+                grid: gridState,
+                name: document.querySelector('input[name="name-board"]').value
+            }),
         })
             .then(response => response.json())
             .then(data => {
@@ -77,28 +77,11 @@ export default function Homepage({ auth }) {
     };
 
 
-    const loadBoard = () => {
-        const hardcodedBoard = [
-            [0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0],
-            [1,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0],
-            [0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,1,0,0],
-            [0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0],
-            [0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0],
-            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,1,0],
-            [0,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1],
-            [0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
-            [0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0],
-            [0,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0],
-            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0,0],
-            [0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0],
-            [0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0],
-            [0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0]
-        ];
-        setGridState(hardcodedBoard);
+    const loadSelectedBoard = (board) => {
+        const parsedGrid = JSON.parse(board.grid);
+        setGridState(parsedGrid);
+        setShowSavedBoards(false);
     };
-
 
     const handleStop = () => {
         setIsRunning(false);
@@ -191,7 +174,7 @@ export default function Homepage({ auth }) {
                             <button
                                 className="text-white font-pixelify bg-gray-500 bg-opacity-40 border-slate-400 border-[1px] px-5 py-2 rounded-md font-bold text-[0.85rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
                                 type="button"
-                                onClick={loadBoard}
+                                onClick={() => setShowSavedBoards(!showSavedBoards)}
                             >
                                 Load Board
                             </button>
@@ -201,8 +184,8 @@ export default function Homepage({ auth }) {
                     <h4 className='text-white font-bold font-playfull text-[1rem] mt-5'>Save</h4>
                     <div className='flex justify-center items-center gap-4'>
                         <div>
-                            <label htmlFor=""></label>
-                            <input type="text" className='w-full bg-gray-800 text-white' />
+                            <label htmlFor="name-bord"></label>
+                            <input type="text" name='name-board' className='w-full bg-gray-800 text-white' placeholder='name board'/>
                         </div>
 
                         <div className='w-[50%]'>
@@ -215,6 +198,20 @@ export default function Homepage({ auth }) {
                             </button>
                         </div>
                     </div>
+                    
+                    {/* Display saved boards when the "Load Board" button is clicked */}
+                    {showSavedBoards && (
+                        <div>
+                            <h3 className="text-white font-bold text-[1.25rem] mb-2">Select a Saved Board</h3>
+                            <ul className="bg-gray-800 p-4 rounded-md text-white max-h-[200px] overflow-auto">
+                                {savedBoards.map((board) => (
+                                    <li key={board.id} className="cursor-pointer hover:bg-gray-600 p-2" onClick={() => loadSelectedBoard(board)}>
+                                        {board.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </section>
             </main>
         </AuthenticatedLayout>
