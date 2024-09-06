@@ -7,7 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\QueryBuilder\QueryBuilder;
-
 use App\Http\Requests\storeBoards;
 
 class BoardController extends Controller

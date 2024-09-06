@@ -7,7 +7,7 @@ export default function Homepage({ auth }) {
     const [isRunning, setIsRunning] = useState(false);
 
     const [gridState, setGridState] = useState(() => {
-        const rows = 15;
+        const rows = 16;
         const cols = 35;
         return createEmptyGrid(rows, cols);
     });
@@ -41,7 +41,7 @@ export default function Homepage({ auth }) {
     };
 
     const handleSubmitGrid = () => {
-        fetch('/submit-grid', {
+        fetch('/boards', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -65,7 +65,29 @@ export default function Homepage({ auth }) {
         );
         setGridState(randomGrid);
     };
+
     
+    const loadBoard = () => {
+        const hardcodedBoard = [
+            [0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0],
+            [1,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0],
+            [0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,1,0,0],
+            [0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0],
+            [0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,1,0],
+            [0,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1],
+            [0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
+            [0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0],
+            [0,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0,0],
+            [0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0],
+            [0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0],
+            [0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0]
+        ];
+        setGridState(hardcodedBoard);
+    };
 
     const renderGridBoard = () => {
         const rows = gridState.length;
@@ -148,6 +170,16 @@ export default function Homepage({ auth }) {
                             onClick={loadRandomBoard}
                         >
                             Random board
+                        </button>
+                    </div>
+
+                    <div>
+                        <button
+                            className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                            type="button"
+                            onClick={loadBoard}
+                        >
+                            Load Board
                         </button>
                     </div>
                 </section>
