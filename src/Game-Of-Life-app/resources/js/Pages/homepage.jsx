@@ -20,6 +20,7 @@ export default function Homepage({ auth }) {
         return createEmptyGrid(rows, cols);
     });
 
+
     useEffect(() => {
         let gameInterval = null;
         let timerInterval = null;
@@ -27,11 +28,11 @@ export default function Homepage({ auth }) {
         if (isRunning) {
             gameInterval = setInterval(() => {
                 setGridState(prevGrid => computeNextGeneration(prevGrid));
-            }, 300); // snelheid van spel 
+            }, 300);
             
             timerInterval = setInterval(() => {
                 setTimer(prevTimer => prevTimer + 1);
-            }, 1000); // snelheid van timer deze moet nooit verandere 
+            }, 1000);
         }
 
         return () => {
@@ -40,12 +41,14 @@ export default function Homepage({ auth }) {
         };
     }, [isRunning]);
 
+
     const handleClick = (row, col) => {
         const updatedGrid = gridState.map((r, rowIndex) =>
             r.map((cell, colIndex) => (rowIndex === row && colIndex === col ? 1 - cell : cell))
         );
         setGridState(updatedGrid);
     };
+    
 
     const handleSubmitGrid = () => {
         fetch('/submit-grid', {
@@ -62,6 +65,38 @@ export default function Homepage({ auth }) {
                 console.log('Grid data submitted:', data);
             })
             .catch(error => console.error('Error submitting grid:', error));
+    };
+
+    const loadRandomBoard = () => {
+        const rows = gridState.length;
+        const cols = gridState[0].length;
+        const randomGrid = gridState.map(row => 
+            row.map(() => (Math.random() < 0.3 ? 1 : 0))
+        );
+        setGridState(randomGrid);
+    };
+
+
+    const loadBoard = () => {
+        const hardcodedBoard = [
+            [0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0],
+            [1,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0],
+            [0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,1,0,0,0,0,1,0,0],
+            [0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0],
+            [0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,1,0],
+            [0,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1],
+            [0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
+            [0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0],
+            [0,0,0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0,0],
+            [0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0],
+            [0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0],
+            [0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0]
+        ];
+        setGridState(hardcodedBoard);
     };
 
 
@@ -143,6 +178,26 @@ export default function Homepage({ auth }) {
                             onClick={handleSubmitGrid}
                         >
                             Submit Grid
+                        </button>
+                    </div>
+
+                    <div>
+                        <button
+                            className="text-white bg-purple-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                            type="button"
+                            onClick={loadRandomBoard}
+                        >
+                            Random board
+                        </button>
+                    </div>
+
+                    <div>
+                        <button
+                            className="text-white bg-orange-500 px-7 py-3 rounded-xl font-bold text-[1.25rem] hover:scale-[1.1] transition-all duration-300 ease-in-out focus:text-gray-200"
+                            type="button"
+                            onClick={loadBoard}
+                        >
+                            Load Board
                         </button>
                     </div>
                 </section>
