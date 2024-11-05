@@ -1,9 +1,9 @@
 import React from 'react';
 
-const ControlsComponent = ({ isRunning, setIsRunning, handleStop, loadRandomBoard, handleSubmitGrid, setShowSavedBoards, showSavedBoards }) => {
+const ControlsComponent = ({ isRunning, setIsRunning, handleStop, loadRandomBoard, handleSubmitGrid, setShowSavedBoards, showSavedBoards, speed, setSpeed }) => {
     return (
-        <>
-            <section className='p-4 grid place-items-start place-content-start items-start grid-cols-1 gap-5 mt-[2.5%] w-[35%] mr-[5%] mb-auto'>
+        <main className='flex flex-col justify-center gap-0'>
+            <section className='p-4 grid place-items-start place-content-start items-start grid-cols-1 gap-5 mt-[2.5%] w-[90%] mr-[5%] mb-auto'>
 
                 <h3 className='text-white font-bold font-playfull text-[1.5rem]'>Start game</h3>
                 <div className='w-full flex justify-start items-start gap-4 mt-[2%]'>
@@ -71,9 +71,23 @@ const ControlsComponent = ({ isRunning, setIsRunning, handleStop, loadRandomBoar
                 </div>
             </section>
 
-            <section>
+            <section className='p-4 grid place-items-start place-content-start items-start grid-cols-1 gap-5 w-[90%] mr-[5%] mb-auto'>
+                <h4 className='text-white font-bold font-playfull text-[1rem] mt-5'>Play Speed</h4>
+                <div className='w-full'>
+                    <input 
+                        type="range" 
+                        name="Play-Speed" 
+                        id="Play-Speed"
+                        className="w-full"
+                        onChange={(e) => setSpeed(e.target.value)} // Update speed state
+                        value={speed} // Bind speed state
+                        min="1"
+                        max="30"
+                        step="1"   
+                    />
+                </div>
             </section>
-        </>
+        </main>
     );
 };
 

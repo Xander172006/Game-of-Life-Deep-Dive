@@ -13,12 +13,13 @@ export default function Homepage({ auth, savedBoards }) {
     const [isRunning, setIsRunning] = useState(false);
     const [showSavedBoards, setShowSavedBoards] = useState(false);
     const [hoveredCell, setHoveredCell] = useState(null);
-    const [gridState, setGridState] = useState(() => createEmptyGrid(23, 40));
+    const [gridState, setGridState] = useState(() => createEmptyGrid(20, 65));
+    const [speed, setSpeed] = useState(10); // Add speed state
 
     // setup grid x & y dimensions
     const initialGridState = () => {
-        const rows = 23;
-        const cols = 40;
+        const rows = 20;
+        const cols = 65;
         return Array.from({ length: rows }, () =>
             Array.from({ length: cols }, () => 0)
         );
@@ -41,7 +42,7 @@ export default function Homepage({ auth, savedBoards }) {
             gameInterval = setInterval(() => {
                 // update grid
                 setGridState(prevGrid => computeNextGeneration(prevGrid));
-            }, 100);
+            }, 1000 / speed); // Adjust interval based on speed
             
             // update timer
             timerInterval = setInterval(() => {
@@ -54,7 +55,7 @@ export default function Homepage({ auth, savedBoards }) {
             clearInterval(gameInterval);
             clearInterval(timerInterval);
         };
-    }, [isRunning]);
+    }, [isRunning, speed]); // Add speed as a dependency
 
 
     // stop game
@@ -73,7 +74,7 @@ export default function Homepage({ auth, savedBoards }) {
                             <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
                         </div>
                         
-                        <div>
+                        <div className='w-full'>
                             <GridComponent
                                 gridState={gridState}
                                 handleClick={handleClick}
@@ -94,6 +95,8 @@ export default function Homepage({ auth, savedBoards }) {
                         handleSubmitGrid={() => handleSubmitGrid(gridState)}
                         setShowSavedBoards={setShowSavedBoards}
                         showSavedBoards={showSavedBoards}
+                        speed={speed} // Pass speed state
+                        setSpeed={setSpeed} // Pass setSpeed function
                     />
 
                     {showSavedBoards && (
