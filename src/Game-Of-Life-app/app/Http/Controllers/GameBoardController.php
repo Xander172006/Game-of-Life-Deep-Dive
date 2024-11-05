@@ -10,7 +10,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use App\Http\Requests\storeBoards;
 use Illuminate\Http\Request;
 
-class HomePageController extends Controller
+class GameBoardController extends Controller
 {
     public function loadSavedBoards()
     {
@@ -28,7 +28,7 @@ class HomePageController extends Controller
     {
         $savedBoards = self::loadSavedBoards();
 
-        return Inertia::render('homepage', [
+        return Inertia::render('GameBoard', [
             'savedBoards' => $savedBoards
         ]);
     }

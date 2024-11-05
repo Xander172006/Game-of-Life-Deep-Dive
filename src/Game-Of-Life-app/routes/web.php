@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 
-use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\GameBoardController;
 use App\Http\Controllers\BoardController;
 
 use Illuminate\Foundation\Application;
@@ -21,8 +21,8 @@ Route::get('/', function () {
 
 // make sure user needs to be authenticated to access the homepage
 Route::middleware('auth')->group(function () {
-    Route::get('/', [HomePageController::class, 'index'])->name('homepage');
-    Route::post('/submit-grid', [HomePageController::class, 'submitGrid'])->name('homepage.submitGrid');
+    Route::get('/', [GameBoardController::class, 'index'])->name('homepage');
+    Route::post('/submit-grid', [GameBoardController::class, 'submitGrid'])->name('homepage.submitGrid');
 });
 
 
