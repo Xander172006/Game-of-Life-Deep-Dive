@@ -2,7 +2,7 @@ import React from 'react';
 
 const SavedBoardsComponent = ({ savedBoards, loadSelectedBoard }) => {
     return (
-        <div>
+        <div className='absolute overflow-hidden'>
             <h3 className="text-white font-bold text-[1.25rem] mb-2">Select a Saved Board</h3>
             <ul className="bg-gray-800 p-4 rounded-md text-white max-h-[200px] overflow-auto">
                 {savedBoards.map((board) => (

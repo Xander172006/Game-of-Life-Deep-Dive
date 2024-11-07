@@ -13,13 +13,13 @@ export default function Homepage({ auth, savedBoards }) {
     const [isRunning, setIsRunning] = useState(false);
     const [showSavedBoards, setShowSavedBoards] = useState(false);
     const [hoveredCell, setHoveredCell] = useState(null);
-    const [gridState, setGridState] = useState(() => createEmptyGrid(20, 65));
+    const [gridState, setGridState] = useState(() => createEmptyGrid(20, 40));
     const [speed, setSpeed] = useState(10); // Add speed state
 
     // setup grid x & y dimensions
     const initialGridState = () => {
         const rows = 20;
-        const cols = 65;
+        const cols = 40;
         return Array.from({ length: rows }, () =>
             Array.from({ length: cols }, () => 0)
         );
@@ -47,7 +47,7 @@ export default function Homepage({ auth, savedBoards }) {
             // update timer
             timerInterval = setInterval(() => {
                 setTimer(prevTimer => prevTimer + 1);
-            }, 1000);
+            }, 1000 / speed); // Adjust interval based on speed
         }
 
         // clear timer
@@ -55,8 +55,7 @@ export default function Homepage({ auth, savedBoards }) {
             clearInterval(gameInterval);
             clearInterval(timerInterval);
         };
-    }, [isRunning, speed]); // Add speed as a dependency
-
+    }, [isRunning, speed]);
 
     // stop game
     const handleStop = () => {
@@ -68,13 +67,13 @@ export default function Homepage({ auth, savedBoards }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Homepage" />
-                <main className="w-[90%] h-full flex flex-row-reverse justify-center items-center mx-auto p-0 m-0">
+                <main className="w-[98%] h-full flex flex-row-reverse justify-center items-center mx-auto p-0 m-0">
                     <section className="w-full h-[90vh] flex flex-col justify-center items-center overflow-auto mb-auto">
-                        <div className='mr-auto my-2'>
+                        <div className='mr-auto my-2 ml-7'>
                             <p className='text-gray-300'>Timer: {`${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}`}</p>
                         </div>
                         
-                        <div className='w-full'>
+                        <div className='w-[95%]'>
                             <GridComponent
                                 gridState={gridState}
                                 handleClick={handleClick}
@@ -87,25 +86,33 @@ export default function Homepage({ auth, savedBoards }) {
                         </div>
                     </section>
 
-                    <ControlsComponent
-                        isRunning={isRunning}
-                        setIsRunning={setIsRunning}
-                        handleStop={handleStop}
-                        loadRandomBoard={() => loadRandomBoard(gridState, setGridState)}
-                        handleSubmitGrid={() => handleSubmitGrid(gridState)}
-                        setShowSavedBoards={setShowSavedBoards}
-                        showSavedBoards={showSavedBoards}
-                        speed={speed} // Pass speed state
-                        setSpeed={setSpeed} // Pass setSpeed function
-                    />
-
-                    {showSavedBoards && (
-                        <SavedBoardsComponent
-                            savedBoards={savedBoards}
-                            loadSelectedBoard={(board) => loadSelectedBoard(board, setGridState, setShowSavedBoards)}
+                    <section className='h-[87.5vh] w-[40%] p-3 custom-blur'>
+                        <ControlsComponent
+                            isRunning={isRunning}
+                            setIsRunning={setIsRunning}
+                            handleStop={handleStop}
+                            loadRandomBoard={() => loadRandomBoard(gridState, setGridState)}
+                            handleSubmitGrid={() => handleSubmitGrid(gridState)}
+                            setShowSavedBoards={setShowSavedBoards}
+                            showSavedBoards={showSavedBoards}
+                            speed={speed} // Pass speed state
+                            setSpeed={setSpeed} // Pass setSpeed function
                         />
-                    )}
+                        {showSavedBoards && (
+                            <SavedBoardsComponent
+                                savedBoards={savedBoards}
+                                loadSelectedBoard={(board) => loadSelectedBoard(board, setGridState, setShowSavedBoards)}
+                            />
+                        )}
+                    </section>
                 </main>
+                <style>
+                    {`
+                        .custom-blur {
+                            backdrop-filter: blur(2.5rem);
+                        }
+                    `}
+                </style>
         </AuthenticatedLayout>
     );
 }
