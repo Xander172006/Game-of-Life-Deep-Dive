@@ -1,0 +1,70 @@
+@keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 6s ease infinite;
+  }
+
+  
+  
+/* Style for the range input slider */
+input[type="range"] {
+    -webkit-appearance: none; /* Remove default styling */
+    width: 100%; /* Full width */
+    height: 8px; /* Track height */
+    background: #ddd; /* Track color */
+    border-radius: 5px; /* Rounded track */
+    outline: none;
+    overflow: hidden; /* Hide overflow for rounded track */
+}
+
+/* WebKit browsers (Chrome, Safari, etc.) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default thumb styling */
+    appearance: none;
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    border-radius: 50%; /* Rounded thumb */
+    background: linear-gradient(to right, red, orange); /* Default gradient */
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    cursor: pointer; /* Pointer cursor on hover */
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2); /* Optional shadow */
+    transition: background-position 0.15s ease; /* Smooth transition */
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(to right, red, orange);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    cursor: pointer;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    transition: background-position 0.15s ease; /* Smooth transition */
+}
+
+/* Edge and Internet Explorer */
+input[type="range"]::-ms-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(to right, red, orange);
+    background-size: 100% 100%;
+    background-position: 0% 0%;
+    cursor: pointer;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    transition: background-position 0.15s ease; /* Smooth transition */
+}

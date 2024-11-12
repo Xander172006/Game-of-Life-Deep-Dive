@@ -17,6 +17,9 @@ export default {
                 playfull: ['Playfair Display', ...defaultTheme.fontFamily.serif],
                 pixelify: ['"Pixelify Sans"', 'sans-serif'],
             },
+            blur: {
+                '14': '3.5rem'
+            }
         },
     },
 

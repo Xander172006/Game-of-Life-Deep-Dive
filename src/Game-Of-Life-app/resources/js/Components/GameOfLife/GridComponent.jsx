@@ -19,8 +19,8 @@ const GridComponent = ({ gridState, handleClick, handleMouseDown, handleMouseUp,
                     <td
                         key={`${row}-${col}`}
                         style={{
-                            width: '25px',
-                            height: '25px', 
+                            width: '67px',
+                            height: '29px', 
                             backgroundColor: isHighlighted
                                 ? '#ffffff'
                                 : isHovered
